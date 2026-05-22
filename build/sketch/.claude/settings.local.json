@@ -1,0 +1,11 @@
+#line 1 "C:\\Work\\Arduino\\DDox\\.claude\\settings.local.json"
+{
+  "permissions": {
+    "allow": [
+      "Skill(update-config)",
+      "Bash(claude config:*)",
+      "Bash(grep -E \"\\\\.\\(md|txt|MD|TXT\\)$\")"
+    ]
+  },
+  "outputStyle": "Learning"
+}
