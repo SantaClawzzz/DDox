@@ -1,4 +1,4 @@
-#line 1 "C:\\Work\\Arduino\\DDox\\Dox.h"
+#line 1 "C:\\Users\\RobinMadar\\OneDrive - Krakul OÜ\\Documents\\Projects\\DDox\\Dox.h"
 #ifndef DOX_H
 #define DOX_H
 
@@ -29,21 +29,21 @@ enum MenuState {
   MENU_NEWCHAR,
   MENU_LOADCHAR,
   MENU_CHARACTER,
-  MENU_CALC
+  MENU_CALC,
+  MENU_HP,
+  MENU_INIT
 };
 
 extern MenuState menuState;
-extern MenuState lastMenuState;
+extern MenuState navStack[];
+extern uint8_t navDepth;
 extern uint8_t selected;
 extern uint8_t lastSelected;
-extern uint8_t sel;
-extern int roll;
-extern int init;
 
 // Function prototypes
-void DelTxt(const char *txt, uint16_t x, uint16_t y);
+void navPush(MenuState next);
+MenuState navPop();
 void Txt(const char *txt, uint16_t x, uint16_t y);
-void InvTxt(const char *txt, uint16_t x, uint16_t y);
 void SelTxt(const char *txt, uint16_t x, uint16_t y, uint8_t w);
 void drawMainMenu();
 void HandleSerial();
@@ -53,6 +53,8 @@ void drawNewCharMenu();
 void drawLoadMenu();
 void drawCharacterMenu();
 void drawCalcMenu();
+void drawHPMenu();
+void drawInitMenu();
 void TxtF(uint16_t x, uint16_t y, const char *fmt, ...);
 
 #endif

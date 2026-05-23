@@ -1,4 +1,4 @@
-#line 1 "C:\\Work\\Arduino\\DDox\\src\\bmp\\Dos.cpp"
+#line 1 "C:\\Users\\RobinMadar\\OneDrive - Krakul OÜ\\Documents\\Projects\\DDox\\src\\bmp\\Dos.cpp"
 // 'Dossier', 100x100px
 #include "bmp.h"
 #include <Arduino.h>

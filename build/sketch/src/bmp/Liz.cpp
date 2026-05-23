@@ -1,4 +1,4 @@
-#line 1 "C:\\Work\\Arduino\\DDox\\src\\bmp\\Liz.cpp"
+#line 1 "C:\\Users\\RobinMadar\\OneDrive - Krakul OÜ\\Documents\\Projects\\DDox\\src\\bmp\\Liz.cpp"
 // 'Liz', 320x240px
 #include "bmp.h"
 #include <Arduino.h>

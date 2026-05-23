@@ -1,4 +1,4 @@
-#line 1 "C:\\Work\\Arduino\\DDox\\src\\bmp\\bmp.h"
+#line 1 "C:\\Users\\RobinMadar\\OneDrive - Krakul OÜ\\Documents\\Projects\\DDox\\src\\bmp\\bmp.h"
 #ifndef BMP_H
 #define BMP_H
 

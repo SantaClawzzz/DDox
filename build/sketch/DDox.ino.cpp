@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#line 1 "C:\\Work\\Arduino\\DDox\\DDox.ino"
+#line 1 "C:\\Users\\RobinMadar\\OneDrive - Krakul OÜ\\Documents\\Projects\\DDox\\DDox.ino"
 
 /***************************************************
   SPI TFT screen for ESP32-C6
@@ -16,7 +16,10 @@
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_RST);
 
 MenuState menuState = MENU_MAIN;
-MenuState lastMenuState = MENU_LOADCHAR;
+MenuState drawnMenuState = MENU_MAIN;
+
+MenuState navStack[4];
+uint8_t navDepth = 0;
 
 uint8_t selected = 0;
 uint8_t lastSelected = 255;
@@ -47,12 +50,12 @@ void loop(void) {
   HandleSerial();
 
   // Menu section
-  if (menuState != lastMenuState || selected != lastSelected) {
+  if (menuState != drawnMenuState || selected != lastSelected) {
 
     drawMenu();
 
     lastSelected = selected;
-    lastMenuState = menuState;
+    drawnMenuState = menuState;
   }
 }
 

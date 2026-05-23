@@ -1,4 +1,4 @@
-#line 1 "C:\\Work\\Arduino\\DDox\\CLAUDE.md"
+#line 1 "C:\\Users\\RobinMadar\\OneDrive - Krakul OÜ\\Documents\\Projects\\DDox\\CLAUDE.md"
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.

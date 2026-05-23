@@ -1,5 +1,5 @@
 {
-  "additionalFiles": "..\\..\\..,..\\..\\..,..\\..\\..,..\\..\\..,..\\..,..\\..,..\\..,..\\..\\..\\..,..\\..\\..\\..,..\\..\\..\\..,..\\..\\..\\..,..\\..\\..\\..,..\\..\\..\\..",
+  "additionalFiles": "..\\..\\..,..\\..\\..,..\\..\\..,..\\..\\..,..\\..,..\\..,..\\..,..\\..,..\\..\\..\\..,..\\..\\..\\..,..\\..\\..\\..,..\\..\\..\\..,..\\..\\..\\..,..\\..\\..\\..",
   "builtInToolsFolders": "",
   "compiler.optimization_flags": "-Os",
   "customBuildProperties": "",
@@ -7,5 +7,5 @@
   "hardwareFolders": "C:\\Users\\RobinMadar\\AppData\\Local\\Arduino15\\packages",
   "otherLibrariesFolders": "C:\\Users\\RobinMadar\\OneDrive - Krakul OÜ\\Documents\\Arduino\\libraries",
   "runtime.ide.version": "10607",
-  "sketchLocation": "C:\\Work\\Arduino\\DDox"
+  "sketchLocation": "C:\\Users\\RobinMadar\\OneDrive - Krakul OÜ\\Documents\\Projects\\DDox"
 }

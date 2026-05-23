@@ -1,4 +1,4 @@
-#line 1 "C:\\Work\\Arduino\\DDox\\Dox.cpp"
+#line 1 "C:\\Users\\RobinMadar\\OneDrive - Krakul OÜ\\Documents\\Projects\\DDox\\Dox.cpp"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
 #include "Dox.h"
@@ -7,6 +7,7 @@
 
 int roll = 0;
 int initiative = 0;
+int current_hp = player.hp;
 uint8_t sel = 0;
 
 // --- FUNCTIONS ---
@@ -52,8 +53,18 @@ void drawMenu() {
     break;
   
   case MENU_CALC:
-    tft.fillScreen(BG); // Calculator menu
+    tft.fillScreen(BG);
     drawCalcMenu();
+    break;
+
+  case MENU_HP:
+    tft.fillScreen(BG);
+    drawHPMenu();
+    break;
+
+  case MENU_INIT:
+    tft.fillScreen(BG);
+    drawInitMenu();
     break;
 
   }
@@ -65,14 +76,8 @@ void selectOption() {
   switch(menuState) {
 
     case MENU_MAIN:
-      if (selected == 0) {
-        menuState = MENU_NEWCHAR;
-        selected = 0;
-      }
-      else if (selected == 1) {
-        menuState = MENU_LOADCHAR;
-        selected = 0;
-      }
+      if (selected == 0) navPush(MENU_NEWCHAR);
+      else if (selected == 1) navPush(MENU_LOADCHAR);
       break;
 
     case MENU_NEWCHAR:
@@ -82,19 +87,16 @@ void selectOption() {
     case MENU_LOADCHAR:
       if (selected < CharacterCount) {
         player = *CharacterList[selected];
-        lastMenuState = menuState;
-        menuState = MENU_CHARACTER;
-        selected = 0;
+        current_hp = player.hp;
+        navPush(MENU_CHARACTER);
+        sel = 0;
       }
       break;
 
     case MENU_CHARACTER:
-      if (sel == 2) {
-        lastMenuState = menuState;
-        menuState = MENU_CALC;
-        selected = 0;
-        sel = 0;
-      }
+      if (sel == 0) navPush(MENU_HP);
+      else if (sel == 1) navPush(MENU_INIT);
+      else navPush(MENU_CALC);
       break;
 
   }
@@ -106,19 +108,11 @@ void drawMainMenu() {
   Txt(" D o s s i e r", 20, 60);
   tft.drawBitmap(200, 20, Dos, 100, 100, ICON);
 
-  // Selectable options
-  if (selected == 0)
-    SelTxt("New Character", 20, 180, 160);
-  else {
-    tft.fillRoundRect(10, 175, 170, 26, 4, BG);
-    Txt("New Character", 20, 180);
-  }
-  if (selected == 1)
-    SelTxt("Load Character", 20, 210, 180);
-  else {
-    tft.fillRoundRect(10, 205, 190, 26, 4, BG);
-    Txt("Load Character", 20, 210);
-  }
+  if (selected == 0) SelTxt("New Character", 20, 180, 160);
+  else Txt("New Character", 20, 180);
+
+  if (selected == 1) SelTxt("Load Character", 20, 210, 180);
+  else Txt("Load Character", 20, 210);
 }
 
 // Draw the "New Character" menu
@@ -128,18 +122,11 @@ void drawNewCharMenu() {
 
 // Draw the "Load Character" menu
 void drawLoadMenu() {
-
-  // New menu
-  if (lastMenuState != MENU_LOADCHAR){
-    Txt("Load Character", 20, 30);
-  }
+  Txt("Load Character", 20, 30);
 
   // List characters
   for (uint8_t i = 0; i < CharacterCount; i++){
     uint8_t y = 90 + i * 30;
-
-    // Outer dot
-    tft.drawCircle(35, y, 7, ICON);
     
     // Options
     if (i == selected) 
@@ -154,63 +141,54 @@ void drawLoadMenu() {
 void drawCharacterMenu(){
 
   // Display character info (player was already set in selectOption())
-  Txt(player.name, 20, 30);
+  SelTxt(player.name, 20, 20, 180);
 
-  TxtF(200, 20, "Level: %d", player.lvl);
-  TxtF(200, 40, "HP:    / %d", player.hp);
-  TxtF(200, 60, "AC: %d", player.ac);
-  TxtF(200, 80, "Initiative: %d", init);
+  TxtF(40, 60, "Level: %d", player.lvl);
+  TxtF(85, 80, "%d", current_hp + player.tempHp);
+  TxtF(40, 80, "HP:   /%d", player.hp);
+  TxtF(190, 60, "AC: %d", player.ac);
+  TxtF(190, 80, "Init: %d", initiative);
 
-  TxtF(20, 100, "STR: %d", player.str);
-  TxtF(20, 130, "DEX: %d", player.dex);
-  TxtF(20, 160, "CON: %d", player.con);
+  TxtF(40, 120, "STR: %d", player.str);
+  TxtF(40, 150, "DEX: %d", player.dex);
+  TxtF(40, 180, "CON: %d", player.con);
   
-  TxtF(150, 100, "INT: %d", player.intel);
-  TxtF(150, 130, "WIS: %d", player.wis);
-  TxtF(150, 160, "CHA: %d", player.cha);
+  TxtF(190, 120, "INT: %d", player.intel);
+  TxtF(190, 150, "WIS: %d", player.wis);
+  TxtF(190, 180, "CHA: %d", player.cha);
 
-  if (selected == 0) sel = (sel + 1) % 3;
-  else if (selected == 1) sel = (sel + 2) % 3;  // +2 mod 3 = -1 mod 3
-
-  // Cursor indicators
-  if (sel == 0)
-    tft.fillCircle(185, 45, 4, TXT);
-  else if (sel == 1)
-    tft.fillCircle(185, 85, 4, TXT);
-
-  if (sel == 2)
-    SelTxt("Calculator", 20, 210, 140);
-  else
+  if (sel == 0) {
+    tft.fillCircle(20, 87, 4, TXT);
     Txt("Calculator", 20, 210);
+  } else if (sel == 1) {
+    tft.fillCircle(180, 87, 4, TXT);
+    Txt("Calculator", 20, 210);
+  } else {
+    SelTxt("Calculator", 20, 210, 140);
+  }
 }
 
 void drawCalcMenu() {
   Txt("Calculator", 20, 30);
 
-  // Initiative field — highlighted when selected == 0
+  // Roll field — highlighted when selected == 0
   if (selected == 0)
-    SelTxt("Initiative", 20, 80, 135);
+    SelTxt("Roll", 20, 80, 70);
   else
-    Txt("Initiative", 20, 80);
-  TxtF(160, 80, "%d", init);
+    Txt("Roll", 20, 80);
+  TxtF(160, 80, "%d", roll);
 
-  // HP field — highlighted when selected == 1
+  // Damage breakdown (read-only)
+  TxtF(20, 130, "Prof: %d", player.proficiency);
+
+  // ExtraDmg field — highlighted when selected == 1
   if (selected == 1)
-    SelTxt("HP", 20, 110, 50);
+    SelTxt("ExtraDmg:", 20, 160, 120);
   else
-    Txt("HP", 20, 110);
-  TxtF(160, 110, "%d", player.hp);
+    Txt("ExtraDmg:", 20, 160);
+  TxtF(160, 160, "%d", player.weaponDamage);
 
-  // Roll field — highlighted when selected == 2
-  if (selected == 2)
-    SelTxt("Roll", 20, 140, 70);
-  else
-    Txt("Roll", 20, 140);
-  TxtF(160, 140, "%d", roll);
-
-  // Damage total (read-only)
-  TxtF(20, 190, "Prof: %d  Wpn: %d", player.proficiency, player.weaponDamage);
-  TxtF(20, 210, "Total: %d", player.proficiency + player.weaponDamage + roll);
+  TxtF(20, 200, "Total: %d", player.proficiency + player.weaponDamage + roll);
 }
 
 void HandleSerial() {
@@ -218,43 +196,95 @@ void HandleSerial() {
     char c = Serial.read();
 
     if (menuState == MENU_CALC) {
-      // In MENU_CALC: '1' increases, '0' decreases the selected field; 'e' cycles fields
       if (c == '1') {
-        if (selected == 0) init++;
-        else if (selected == 1) player.hp++;
-        else if (selected == 2) roll++;
-        lastSelected = ~selected;  // force redraw
+        if (selected == 0) roll++;
+        else if (selected == 1) player.weaponDamage++;
+        lastSelected = ~selected;
       }
       else if (c == '0') {
-        if (selected == 0) init--;
-        else if (selected == 1) player.hp--;
-        else if (selected == 2) roll--;
-        lastSelected = ~selected;  // force redraw
+        if (selected == 0) roll--;
+        else if (selected == 1) player.weaponDamage--;
+        lastSelected = ~selected;
       }
-      else if (c == 'e') {
-        selected = (selected + 1) % 3;
+      else if (c == 'e') selected = (selected + 1) % 2;
+      else if (c == 'q') menuState = navPop();
+    }
+    else if (menuState == MENU_CHARACTER) {
+      if (c == '1') {
+        sel = (sel + 1) % 3;
+        lastSelected = ~selected;
       }
-      else if (c == 'q') {
-        menuState = lastMenuState;
-        selected = 0;
+      else if (c == '0') {
+        sel = (sel + 2) % 3;
+        lastSelected = ~selected;
       }
+      else if (c == 'e') selectOption();
+      else if (c == 'q') menuState = navPop();
+    }
+    else if (menuState == MENU_HP) {
+      if (c == '1') {
+        if (selected == 0 && current_hp < player.hp) { current_hp++; lastSelected = ~selected; }
+        else if (selected == 1) { player.tempHp++; lastSelected = ~selected; }
+      }
+      else if (c == '0') {
+        if (selected == 0) { current_hp--; lastSelected = ~selected; }
+        else if (selected == 1 && player.tempHp > 0) { player.tempHp--; lastSelected = ~selected; }
+      }
+      else if (c == 'e') selected = (selected + 1) % 2;
+      else if (c == 'q') menuState = navPop();
+    }
+    else if (menuState == MENU_INIT) {
+      if (c == '1') { initiative++; lastSelected = ~selected; }
+      else if (c == '0') { initiative--; lastSelected = ~selected; }
+      else if (c == 'q') menuState = navPop();
     }
     else {
+      uint8_t maxItems = (menuState == MENU_LOADCHAR) ? CharacterCount : 2;
       if (c == '0') {
-        selected = 0;
+        selected = (selected + 1) % maxItems;
       }
       else if (c == '1') {
-        selected = 1;
+        selected = (selected + maxItems - 1) % maxItems;
       }
       else if (c == 'e') {
         selectOption();
       }
       else if (c == 'q') {
-        menuState = lastMenuState;
-        selected = 0;
+        menuState = navPop();
       }
     }
   }
+}
+
+void drawHPMenu() {
+  SelTxt(player.name, 20, 20, 180);
+  Txt("Hit Points", 20, 60);
+  if (selected == 0) tft.fillCircle(20, 115, 4, TXT);
+  else if (selected == 1) tft.fillCircle(20, 145, 4, TXT);
+  Txt("HP:", 40, 107);
+  TxtF(110, 107, "%d / %d", current_hp, player.hp);
+  Txt("Temp:", 40, 137);
+  TxtF(110, 137, "%d", player.tempHp);
+}
+
+void drawInitMenu() {
+  SelTxt(player.name, 20, 20, 180);
+  Txt("Initiative", 20, 60);
+  tft.fillCircle(20, 115, 4, TXT);
+  Txt("INT:", 40, 107);
+  TxtF(110, 107, "%d", initiative);
+}
+
+void navPush(MenuState next) {
+  if (navDepth < 4) navStack[navDepth++] = menuState;
+  menuState = next;
+  selected = 0;
+}
+
+MenuState navPop() {
+  selected = 0;
+  if (navDepth > 0) return navStack[--navDepth];
+  return MENU_MAIN;
 }
 
 void TxtF(uint16_t x, uint16_t y, const char *fmt, ...) {

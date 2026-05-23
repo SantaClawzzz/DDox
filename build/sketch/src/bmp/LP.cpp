@@ -1,4 +1,4 @@
-#line 1 "C:\\Work\\Arduino\\DDox\\src\\bmp\\LP.cpp"
+#line 1 "C:\\Users\\RobinMadar\\OneDrive - Krakul OÜ\\Documents\\Projects\\DDox\\src\\bmp\\LP.cpp"
 // 'LP (240 x 340 px)', 240x320px
 #include "bmp.h"
 #include <Arduino.h>
