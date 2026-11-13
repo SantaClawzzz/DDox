@@ -1,9 +1,11 @@
-## Project Overview
+## Introduction
 
 DDox is a D&D character dossier project — HP tracking, initiative rolling, stat display, and a damage calculator.<br>
 Uses ESP32-C6 and Arduino.
 
 Libraries: `Adafruit_ILI9341`, `Adafruit_GFX`
+
+![Image](DDoxConcept.jpg)
 
 ## Pinout
 
